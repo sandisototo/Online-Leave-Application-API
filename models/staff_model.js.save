@@ -1,0 +1,135 @@
+var mysql 			= null;
+var connection 		= null;
+
+function setMySQL(mysql, connection){
+	this.mysql = mysql;
+	this.connection = connection;
+};
+
+function validate_user_credintials(email, password, callback){
+
+	var query = "SELECT * FROM ?? WHERE ??=? AND ??=? ";
+	var table = ["staff","email", email,"password", password];
+	query = this.mysql.format(query,table);
+	console.logque(); 
+	this.connection.query(query,function(err,rows){
+		var data;
+		if(err) {
+			data =  {"status" : false, "description" : "Error executing MySQL query"};
+			return callback(data);
+		} else {
+
+			if(rows.length == 0){
+				data = {"status" : false, "description" : "User NOT found."};
+				return callback(data);
+			}else{
+				data =  {"status" : true, "description" : "Success", "user_details" : rows[0]};
+				return callback(data);
+			}
+
+		}
+	});
+};
+
+
+function reset_password(email, new_password, callback){
+
+	var query = "UPDATE ?? SET  ??=? WHERE ??=?";
+	var table = ["staff","password", new_password,"email", email];
+	query = this.mysql.format(query,table);
+	//return callback(query); return false;
+	this.connection.query(query,function(err,rows){
+		var data;
+		if(err) {
+			data =  {"status" : false, "description" : "Error executing MySQL query"};
+			return callback(data);
+		} else {
+
+			if(rows.affectedRows == 0){
+				data = {"status" : false, "description" : "User NOT Found. Please make sure you type in a correct email address."};
+				return callback(data);
+			}else{
+				data =  {"status" : true, "description" : "Success! Your password has been updated."};
+				return callback(data);
+			}
+
+		}
+	});
+};
+function get_staff_member(staff_id,callback){
+
+
+		var query = "SELECT * FROM ?? WHERE ??=?";
+		var table = ["staff","id",staff_id];
+		query = this.mysql.format(query,table);
+		this.connection.query(query,function(err,rows){
+			var data ;
+			if(err) {
+				data = {"status" : false, "description" : "Error executing MySQL query"};
+				return callback(data);
+			} else {
+
+				if(rows.length == 0){
+					data = {"status" : false, "description" : "Member NOT found."};
+					return callback(data);
+				}else{
+					data = {"status" : true, "description" : "Success", "staff_member_details" : rows};
+					return callback(data);
+				}
+
+			}
+		});
+};
+
+function limits(res,leave_type_id,staff_id){
+
+ var query = "SELECT num_days FROM ?? WHERE ?? =? AND ??=?" ;
+    var table = ["staff_leave_type","leave_type_id",leave_type_id,"staff_id",staff_id];
+    query = this.mysql.format(query,table);
+    this.connection.query(query,function(err,num_days){
+    if(err) {
+      res.json({"Error" : true, "Message" : "Error executing MySQL query"});
+    } else {
+
+			if(num_days.length == 0){
+					res.json({"Error" : true, "Message" : "No leave found."});
+			}else{
+					  res.json({"Error" : false, "Message" : "Success", "num_days" : num_days});
+			}
+
+    }
+    });
+
+};
+
+function get_all_staff(callback){
+	var query = "SELECT * FROM ??";
+	var table = ["staff"];
+	query = this.mysql.format(query,table);
+	this.connection.query(query,function(err,rows){
+		var data ;
+		if(err) {
+			data = {"Error" : true, "Message" : "Error executing MySQL query"};
+			return callback(data);
+		} else {
+
+			if(rows.length == 0){
+				data = {"Error" : true, "Message" : "The are no staff members yet."};
+				return callback(data);
+			}else{
+				data = {"Error" : false, "Message" : "Success", "leave_applications" : rows};
+				return callback(data);
+			}
+
+		}
+	});
+
+};
+
+// include with staff's global
+exports.setMySQL = setMySQL;
+exports.validate_user_credintials	= validate_user_credintials;
+exports.reset_password = reset_password;
+exports.limits = limits;
+exports.get_all_staff = get_all_staff;
+exports.get_staff_member= get_staff_member;

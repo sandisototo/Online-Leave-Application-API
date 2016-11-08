@@ -1,0 +1,39 @@
+{
+  "name": "moment-weekday-calc",
+  "version": "1.1.0",
+  "homepage": "https://github.com/andruhon/moment-weekday-calc",
+  "authors": [
+    "Andrei Kondratev <andreik@catalyst.net.nz>"
+  ],
+  "description": "Weekdays calculator: calculates number of days from the given set within the given diff. For example: calculate quantity of business days in 2015 financial year starting on 1 Apr 2015",
+  "main": "src/moment-weekday-calc.min.js",
+  "keywords": [
+    "moment",
+    "business",
+    "workday",
+    "day",
+    "week",
+    "calculator"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "moment": "~2.10.3"
+  },
+  "_release": "1.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.1.0",
+    "commit": "e46a64a762112e5f8a9d264892e20b9a488cb17d"
+  },
+  "_source": "git://github.com/andruhon/moment-weekday-calc.git",
+  "_target": "^1.1.0",
+  "_originalSource": "moment-weekday-calc",
+  "_direct": true
+}

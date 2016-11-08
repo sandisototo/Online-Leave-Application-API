@@ -1,0 +1,72 @@
+function setUpDB(parent, mysql){
+  var global  = require('./../config/global');
+  var db_details = {};
+  if(global.enviroment.api_urls.state === "dev"){
+
+    db_details = {
+      connectionLimit : 1000,
+      host     : 'localhost',
+      user     : 'root',
+      password : '',
+      database : 'leave',
+      debug    :  false
+    };
+
+  }else {
+    db_details = {
+      connectionLimit : 1000,
+      host     : '173.194.107.50',
+      user     : 'vm_user',
+      password : 'e2GY3vB8b885eBo',
+      database : 'rlabs_leave',
+      debug    :  false
+    };
+  }
+  var self = parent;
+
+<<<<<
+  function handleDisconnect(callback) {
+    // Recreate the connection, since
+    // the old one cannot be reused.
+    var pool  =  mysql.createPool( db_details );
+
+    pool.getConnection(function(err,connection){
+
+      if(err) {
+            pool.end();
+            handleDisconnect();
+            return err;
+      } else {
+        return connection;
+      }
+    });
+
+    return pool;
+
+}
+
+
+setInterval(function () {
+          handleDisconnect();
+
+}, 2000);
+
+
+
+function connect(){
+  self.configureExpress(handleDisconnect(function(response){
+    //console.log(response);
+     return response;
+  }));
+  return self;
+}
+
+connect();
+
+>>>>>>> 07d0ccdd80feaa4b69c294b03fa8935eadff3cfd
+
+};
+
+
+// declaring function as a global function
+exports.setUpDB = setUpDB;

@@ -1,0 +1,82 @@
+function STAFF_ROUTER(router, bookshelf, request) {
+	var self = this;
+	var model = require('../models/staff_model');
+	model.setBookshelf(bookshelf);
+	const crypto = require('crypto');
+
+	self.handleRoutes(router, model, crypto, request);
+}
+
+STAFF_ROUTER.prototype.handleRoutes= function(router, model, crypto, request) {
+
+	router.get("/index",function(req,res){
+      res.json({"Message" : "Staff Controller"});
+  });
+
+	router.post("/staff_login",function(req,res){
+      var email = req.body.email;
+      var password = req.body.password;
+
+      model.validate_user_credintials(email,password, function(response){
+							res.json(response);
+			});
+
+  });
+
+	router.post("/reset_password",function(req,res){
+			var email = req.body.email;
+			 
+			const secret = 'abcdefg';
+		  const new_password = 'rlabs'+crypto.randomBytes(4, secret).toString('hex');
+			//res.json(new_password); return false;
+			model.reset_password(email, new_password, function(response){
+							if(response.status){
+
+
+								var subject = "RLabs Leave Application (Reset Password) ";
+								var message_body = response.description+"<br><br>"+
+																	 "This is your new password: <b>"+new_password+"</b>";
+								var email_helper = require('../config/helper/email-helper');
+										email_helper.sendEmail(request, email , subject, message_body, function(response){});
+
+										 res.json(response);
+
+							}else{
+											res.json(response);
+							}
+			});
+
+	});
+
+	router.get("/limits/:leave_type_id/:staff_id",function(req,res){
+
+		var leave_type_id =req.params.leave_type_id;
+		var staff_id = req.params.staff_id;
+
+		model.limits(leave_type_id,staff_id, function(response){
+
+			res.json(response);
+
+		});
+
+	});
+
+
+	router.post("/get_staff_member",function(req,res){
+
+		var staff_id = req.body.staff_id;
+		model.get_staff_member(staff_id,function(response){
+			res.json(response);
+		});
+	});
+
+	router.get("/get_all_staff",function(req,res){
+		model.get_all_staff(function(response){
+			res.json(response);
+		});
+
+	});
+
+}
+
+module.exports = STAFF_ROUTER;
